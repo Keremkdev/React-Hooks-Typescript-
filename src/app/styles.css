@@ -133,3 +133,45 @@
 .theme-toggle:hover {
   background-color: var(--button-hover);
 }
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+}
+
+.stats span {
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-button:hover {
+  background-color: var(--button-bg);
+  color: white;
+}
+
+.filter-button.active {
+  background-color: var(--button-bg);
+  color: white;
+  border-color: var(--button-bg);
+}

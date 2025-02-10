@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles.css";
@@ -13,9 +13,13 @@ export default function TodoApp() {
   //-bileşen içinde state yönetmek için kullanılır.
   //- todos: görevleri tutan state
   //- inputValue: görevleri güncellemek için kullanılır.
+  //- filterStatus: görevleri filtrelemek için kullanılır.
 
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "active" | "completed"
+  >("all");
 
   // useRef hook kullanımı
   //- DOM elementlerine erişmek için kullanılır.
@@ -46,6 +50,7 @@ export default function TodoApp() {
   }, [todos]);
 
   // useCallback hook kullanımı
+  //
   //- görev ekleme işlemini optimize etmek için kullanılır.
   //- useCallback: görev ekleme işlemini optimize etmek için kullanılır.
 
@@ -82,6 +87,31 @@ export default function TodoApp() {
   // - useTheme: tema durumunu ve değiştirme fonksiyonunu sağlar
   const { theme, toggleTheme } = useTheme();
 
+  // useMemo hook kullanımı
+  // - Filtrelenmiş todo listesini hesaplar ve sonucu döner
+  // - Sadece todos veya filterStatus değiştiğinde yeniden hesaplanır
+  const filteredTodos = useMemo(() => {
+    console.log("Filtering todos..."); // Performance kontrolü için
+    switch (filterStatus) {
+      case "active":
+        return todos.filter((todo) => !todo.completed);
+      case "completed":
+        return todos.filter((todo) => todo.completed);
+      default:
+        return todos;
+    }
+  }, [todos, filterStatus]);
+
+  // İstatistikleri hesaplama
+  const todoStats = useMemo(() => {
+    console.log("Calculating stats..."); // Performance kontrolü için
+    return {
+      total: todos.length,
+      completed: todos.filter((todo) => todo.completed).length,
+      active: todos.filter((todo) => !todo.completed).length,
+    };
+  }, [todos]);
+
   return (
     <div className={`container ${theme}`}>
       <div className="todo-card">
@@ -91,6 +121,41 @@ export default function TodoApp() {
         <div className="todo-content">
           <div>
             <h1 className="title">Todo List - Hooks </h1>
+
+            {/* Todo İstatistikleri */}
+            <div className="stats">
+              <span>Toplam: {todoStats.total}</span>
+              <span>Tamamlanan: {todoStats.completed}</span>
+              <span>Aktif: {todoStats.active}</span>
+            </div>
+
+            {/* Filtre Butonları */}
+            <div className="filter-buttons">
+              <button
+                className={`filter-button ${
+                  filterStatus === "all" ? "active" : ""
+                }`}
+                onClick={() => setFilterStatus("all")}
+              >
+                Tümü
+              </button>
+              <button
+                className={`filter-button ${
+                  filterStatus === "active" ? "active" : ""
+                }`}
+                onClick={() => setFilterStatus("active")}
+              >
+                Aktif
+              </button>
+              <button
+                className={`filter-button ${
+                  filterStatus === "completed" ? "active" : ""
+                }`}
+                onClick={() => setFilterStatus("completed")}
+              >
+                Tamamlanan
+              </button>
+            </div>
 
             <div className="input-group">
               <input
@@ -107,7 +172,7 @@ export default function TodoApp() {
             </div>
 
             <ul className="todo-list">
-              {todos.map((todo) => (
+              {filteredTodos.map((todo) => (
                 <li key={todo.id} className="todo-item">
                   <div className="todo-item-content">
                     <input
