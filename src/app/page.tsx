@@ -1,95 +1,137 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useCallback, useRef } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./styles.css";
+import { Todo } from "@/types/todo";
+import { useTheme } from "@/context/ThemeContext";
+import "./globals.css";
+
+export default function TodoApp() {
+  // useState hook kullanımı
+  //-bileşen içinde state yönetmek için kullanılır.
+  //- todos: görevleri tutan state
+  //- inputValue: görevleri güncellemek için kullanılır.
+
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [inputValue, setInputValue] = useState("");
+
+  // useRef hook kullanımı
+  //- DOM elementlerine erişmek için kullanılır.
+  //- inputRef: input alanına erişmek için kullanılır.
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // useEffect hook kullanımı
+  //- bileşen içinde side efektleri yönetmek için kullanılır.
+  //- useEffect: localStorage'dan görevleri yüklemek için kullanılır.
+  //- useEffect: localStorage'a görevleri kaydetmek için kullanılır.
+
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("todos");
+    if (savedTodos) {
+      setTodos(JSON.parse(savedTodos));
+      toast.info("useEffect: Kaydedilmiş görevler yüklendi!", {
+        position: "top-right",
+      });
+    }
+  }, []);
+
+  // useEffect ile localStorage'a kaydetme
+  //- todos değiştiğinde localStorage'a görevleri kaydetmek için kullanılır.
+  //- useEffect: localStorage'a görevleri kaydetmek için kullanılır.
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
+  // useCallback hook kullanımı
+  //- görev ekleme işlemini optimize etmek için kullanılır.
+  //- useCallback: görev ekleme işlemini optimize etmek için kullanılır.
+
+  const addTodo = useCallback(() => {
+    if (inputValue.trim()) {
+      const newTodo: Todo = {
+        id: Date.now(),
+        text: inputValue,
+        completed: false,
+        createdAt: new Date(),
+      };
+      setTodos((prev) => [...prev, newTodo]);
+      setInputValue("");
+      toast.success("useCallback: Yeni görev eklendi!");
+    }
+  }, [inputValue]);
+
+  const toggleTodo = (id: number) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+    toast.info("useState: Görev durumu güncellendi!");
+  };
+
+  const deleteTodo = (id: number) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    toast.error("useState: Görev silindi!");
+  };
+
+  // useContext hook kullanımı
+  // - Tema değişikliğini global state'te yönetmek için kullanılır
+  // - useTheme: tema durumunu ve değiştirme fonksiyonunu sağlar
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className={`container ${theme}`}>
+      <div className="todo-card">
+        <button onClick={toggleTheme} className="theme-toggle">
+          {theme === "light" ? "🌙" : "☀️"}
+        </button>
+        <div className="todo-content">
+          <div>
+            <h1 className="title">Todo List - Hooks </h1>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+            <div className="input-group">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="todo-input"
+                placeholder="Yeni görev ekle..."
+              />
+              <button onClick={addTodo} className="add-button">
+                Ekle
+              </button>
+            </div>
+
+            <ul className="todo-list">
+              {todos.map((todo) => (
+                <li key={todo.id} className="todo-item">
+                  <div className="todo-item-content">
+                    <input
+                      type="checkbox"
+                      checked={todo.completed}
+                      onChange={() => toggleTodo(todo.id)}
+                    />
+                    <span className={todo.completed ? "completed" : ""}>
+                      {todo.text}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => deleteTodo(todo.id)}
+                    className="delete-button"
+                  >
+                    Sil
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      <ToastContainer theme={theme} />
     </div>
   );
 }

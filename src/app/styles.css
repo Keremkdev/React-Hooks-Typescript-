@@ -1,0 +1,135 @@
+/* Tema değişkenleri */
+.light {
+  --bg-color: #f3f4f6;
+  --card-bg: white;
+  --text-color: #1f2937;
+  --border-color: #e5e7eb;
+  --button-bg: #3b82f6;
+  --button-hover: #2563eb;
+  --delete-button-bg: #ef4444;
+  --delete-button-hover: #dc2626;
+}
+
+.dark {
+  --bg-color: #1f2937;
+  --card-bg: #374151;
+  --text-color: #f3f4f6;
+  --border-color: #4b5563;
+  --button-bg: #60a5fa;
+  --button-hover: #3b82f6;
+  --delete-button-bg: #f87171;
+  --delete-button-hover: #ef4444;
+}
+
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.todo-card {
+  position: relative;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 2.5rem 5rem;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 1.5rem;
+}
+
+.todo-content {
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.add-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: var(--button-hover);
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.todo-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.delete-button {
+  padding: 0.25rem 0.5rem;
+  background-color: var(--delete-button-bg);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: var(--delete-button-hover);
+}
+
+/* Tema değiştirme butonu stilleri */
+.theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background-color: var(--button-hover);
+}
